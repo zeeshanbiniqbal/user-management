@@ -8,6 +8,8 @@ import com.example.usermanagement.entity.User;
 import com.example.usermanagement.repository.UserRepository;
 import com.example.usermanagement.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AuthService {
@@ -68,5 +72,34 @@ public class AuthService {
     public User findAndReturnUser(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Invalid username or password"));
+        //note that passwordEncoder does not have method/functionality to decrypt.
+        //If decryption is needed, then use jasypt-spring-boot-starter
     }
+
+    public User getUserDetails(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Invalid username or password"));
+    }
+
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    public ApiResponse<?> updateUser(RegisterRequest request) {
+        User user = getUserDetails(request.getId());
+
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(user);
+        return new ApiResponse<>(true, "User details update completed successfully", null);
+
+    }
+
+    public ApiResponse<?> deleteUserDetails(Long id) {
+        User user = getUserDetails(id);
+        userRepository.delete(user);
+        return new ApiResponse<>(true, "User deleted successfully", null);
+    }
+
+
 }
