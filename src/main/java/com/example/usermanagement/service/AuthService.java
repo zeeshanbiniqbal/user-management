@@ -88,8 +88,8 @@ public class AuthService {
     public ApiResponse<?> updateUser(RegisterRequest request) {
         User user = getUserDetails(request.getId());
 
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setEmail(request.getEmail().isEmpty()?user.getEmail():request.getEmail());
+        user.setPassword(request.getPassword().isBlank()?user.getPassword():passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
         return new ApiResponse<>(true, "User details update completed successfully", null);
 
