@@ -6,6 +6,14 @@ import com.example.usermanagement.dto.LoginRequest;
 import com.example.usermanagement.dto.RegisterRequest;
 import com.example.usermanagement.entity.User;
 import com.example.usermanagement.repository.UserRepository;
+import com.example.usermanagement.security.jwt.JwtUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +21,16 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtils jwtUtils;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
 
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -37,7 +55,18 @@ public class AuthService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid username or password");
         }
-        String token = "dummy-jwt-token"; // Will be replaced with real JWT by Sourav
+        //String token = "dummy-jwt-token"; // Will be replaced with real JWT by Sourav
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+        String token = jwtUtils.generateToken(userDetails);
         return new ApiResponse<>(true, "Login successful", new AuthResponse(token));
+    }
+
+    public User findAndReturnUser(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Invalid username or password"));
     }
 }
