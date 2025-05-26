@@ -1,6 +1,6 @@
 package com.example.usermanagement.dto;
 
-public class RegisterRequest {
+public class RegisterRequest  extends GenericAttributes {
     private String username;
     private String email;
     private String password;
@@ -46,5 +46,15 @@ public class RegisterRequest {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "RegisterRequest{" +
+                "username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", id=" + id +
+                "} " + super.toString();
     }
 }

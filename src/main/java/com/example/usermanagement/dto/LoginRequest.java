@@ -1,6 +1,6 @@
 package com.example.usermanagement.dto;
 
-public class LoginRequest {
+public class LoginRequest extends GenericAttributes {
     private String username;
     private String password;
 
@@ -25,5 +25,13 @@ public class LoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "LoginRequest{" +
+                "password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                "} " + super.toString();
     }
 }

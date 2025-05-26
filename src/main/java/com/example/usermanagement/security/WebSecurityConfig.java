@@ -27,31 +27,9 @@ public class WebSecurityConfig  {
 	@Autowired
 	private AuthTokenFilter filter;
 
-//	@Bean
-//	public AuthTokenFilter authenticationJwtTokenFilter() {
-//		return new AuthTokenFilter();
-//	}
-
-
-//	@Bean
-//	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-//		return http.getSharedObject(AuthenticationManagerBuilder.class).build();
-//	}
-
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//       http.cors().and().csrf().disable()
-//               .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-//			   .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//			   .and().authorizeRequests().requestMatchers("/api/auth/**").permitAll()
-//			   .requestMatchers("/api/test/**").permitAll()
-//			   .requestMatchers("/error").permitAll()
-//			.anyRequest().authenticated();
-//
-//       //http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-//
-//       return http.build();
 
 		http.csrf(csrf -> csrf.disable()) // disabling Cross-Site Request Forgery - protects against unauthorized actions from a user the server trusts
 				.cors(cors -> cors.disable())  // disabling Cross-Origin Resource Sharing - microservices comms won't work now
