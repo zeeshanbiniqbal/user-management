@@ -45,7 +45,11 @@ public class MyConfig {
 
         UserDetails userDetails1 = org.springframework.security.core.userdetails.User.builder().username("Zeeshan")
                 .password(passwordEncoder().encode("zeeshan")).roles("ADMIN").build();
-        return new InMemoryUserDetailsManager(userDetails, userDetails1);
+
+        UserDetails userDetails2 = org.springframework.security.core.userdetails.User.builder().username("Shamsan")
+                .password(passwordEncoder().encode("Shamsan")).roles("CALLCENTER").build();
+
+        return new InMemoryUserDetailsManager(userDetails, userDetails1, userDetails2);
     }
 
     @Bean

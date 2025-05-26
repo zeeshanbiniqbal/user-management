@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -61,6 +62,7 @@ public class AuthController {
     }
 
     @PutMapping("/updateUser")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> updateUser(@RequestBody RegisterRequest request) {
         request.setRequestId(Math.abs(UUID.randomUUID().getMostSignificantBits()));
         logger.info(request.getStartTime()+request.toString());
@@ -68,6 +70,7 @@ public class AuthController {
     }
 
     @DeleteMapping("/deleteUserDetails/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> deleteUserDetails(@PathVariable  Long id) {
         GenericAttributes request = new GenericAttributes();
         request.setRequestId(Math.abs(UUID.randomUUID().getMostSignificantBits()));

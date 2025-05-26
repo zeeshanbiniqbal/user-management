@@ -50,15 +50,15 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 			} catch (IllegalArgumentException e) {
 				logger.info("Illegal Argument while fetching the username !!");
-				e.printStackTrace();
+				throw new ServletException("Illegal Argument while fetching the username !! "+e.getMessage());
 			} catch (ExpiredJwtException e) {
 				logger.info("Given jwt token is expired !!");
-				e.printStackTrace();
+				throw new ServletException("Given jwt token is expired !! "+e.getMessage());
 			} catch (MalformedJwtException e) {
 				logger.info("Something changed in token or Invalid Token");
-				e.printStackTrace();
+				throw new ServletException("Something changed in token or Invalid Token "+e.getMessage());
 			} catch (Exception e) {
-				e.printStackTrace();
+				throw new ServletException(" "+e.getMessage());
 			}
 		} else {
 			logger.info("Invalid Header Value !! ");
