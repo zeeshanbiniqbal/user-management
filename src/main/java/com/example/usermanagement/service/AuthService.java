@@ -3,6 +3,7 @@ package com.example.usermanagement.service;
 import com.example.usermanagement.dto.*;
 import com.example.usermanagement.entity.User;
 import com.example.usermanagement.repository.UserRepository;
+import com.example.usermanagement.security.MyConfig;
 import com.example.usermanagement.security.jwt.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,17 +56,21 @@ public class AuthService {
     }
 
     public ApiResponse<AuthResponse> login(LoginRequest request) {
+//      initialize userDetailsService bean first then call the loadUserByUsername
+//        MyConfig myConfig = new MyConfig(userRepository);
+//        myConfig.userDetailsService();
+        //uncomment above codes after switching to an actual DB (i.e. DB != h2 DB)
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("Invalid username or password"));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             logger.info("requestId:"+" "+request.getRequestId()+" , endTime="+" "+request.getEndTime());
             throw new RuntimeException("Invalid username or password");
         }
-        //String token = "dummy-jwt-token"; // Will be replaced with real JWT by Sourav
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         String token = jwtUtils.generateToken(userDetails);
         logger.info("requestId:"+" "+request.getRequestId()+" , endTime="+" "+request.getEndTime());
